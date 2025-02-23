@@ -2,10 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
+import RelatedDoctors from "../components/RelatedDoctors";
 // import { assets } from "../assets/assets";
 
 const Appointment = () => {
   const { docId } = useParams();
+
+  // console.log(docId)
 
   const { doctors, currencySymbol } = useContext(AppContext);
 
@@ -19,7 +22,7 @@ const Appointment = () => {
   const fetchDocInfo = async () => {
     const docInfo = await doctors.find((doc) => doc._id === docId);
     setDocInfo(docInfo);
-    // console.log(docInfo);
+    // console.log(docInfo.speciality);
   };
 
   const getAvailableSlot = async () => {
@@ -82,7 +85,7 @@ const Appointment = () => {
   }, [docInfo]);
 
   useEffect(() => {
-    console.log(docSlots);
+    // console.log(docSlots);
   }, [docSlots]);
 
   return (
@@ -172,6 +175,11 @@ const Appointment = () => {
           Book an appointment
         </button>
       </div>
+
+      <RelatedDoctors docId={docId} speciality={docInfo?.speciality} />
+
+
+
     </div>
   );
 };
