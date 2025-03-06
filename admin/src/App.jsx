@@ -5,7 +5,7 @@ import { Login } from "./pages/Login"
 
 const App = () => {
   return (
-    <div className="bg-yellow-500" >
+    <div >
       <Login/>
     </div>
   )
