@@ -27,19 +27,19 @@ const doctorSchema=mongoose.Schema({
         type:String,
         required:true
     },
-    experiece:{
+    experience:{
         type:String,
         required:true
     },
     about:{
-        type:String,
+        type:Object,
         required:true
     },
     available:{
         type:Boolean,
-        required:true
+        default:true
     },
-    frees:{
+    fees:{
         type:Number,
         required:true
     },
