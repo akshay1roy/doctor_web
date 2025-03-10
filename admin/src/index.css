@@ -2,6 +2,9 @@
 
 /* @source "../node_modules/@my-company/ui-lib"; */
 
+::-webkit-scrollbar{
+  @apply hidden
+}
 
 @theme {
 
