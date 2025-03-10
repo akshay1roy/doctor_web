@@ -1,11 +1,22 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
-export const AdminContext=createContext()
+const AdminContext=createContext()
 
 
 const AdminContextProvider=(props)=>{
-    const [aToken,setAToken]= useState('')
+    const storedToken = localStorage.getItem("aToken") || "";
+    const [aToken, setAToken] = useState(storedToken);
+    // const [aToken,setAToken]= useState(localStorage.getItem('aToken')?localStorage.getItem('aToken'):' ')
     const backendUrl= import.meta.env.VITE_BACKEND_URL 
+
+    useEffect(() => {
+        if (aToken) {
+            localStorage.setItem("aToken", aToken);
+        } else {
+            localStorage.removeItem("aToken");
+        }
+    }, [aToken]);
+
 
     const value={
         aToken,
@@ -21,4 +32,4 @@ const AdminContextProvider=(props)=>{
     )
 }
 
-export default AdminContextProvider;
+export  {AdminContextProvider,AdminContext};

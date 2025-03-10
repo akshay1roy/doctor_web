@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { assets } from "../assets/assets";
 import { AdminContext } from "../context/AdminContext";
 import axios from 'axios'
+import { toast } from "react-toastify";
 
 export const Login = () => {
   const [state, setState] = useState("Admin");
@@ -29,8 +30,13 @@ export const Login = () => {
                     // console.log(data.token);
                     localStorage.setItem('aToken',data.token)
                     setAToken(data.token);
+                    // toast.success()
+                }
+                else{
+                  toast.error(data.message)
                 }
             }else{
+                
                 console.log("api is not working")
             }
 
