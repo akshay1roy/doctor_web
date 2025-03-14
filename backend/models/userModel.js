@@ -36,6 +36,6 @@ const userSchema=mongoose.Schema({
     }
 })
 
-const userModel=mongoose.models.doctor || mongoose.model("doctor",userSchema);
+const userModel=mongoose.models.user || mongoose.model("user",userSchema);
 
 export default userModel;
