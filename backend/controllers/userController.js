@@ -94,13 +94,13 @@ const getProfile=async(req,res)=>{
     try {
         const userId= req.user?.id;
 
-        console.log(req.user)
+        // console.log(req.user)
 
         const userData= await userModel.findById(userId).select('-password')
 
         res.json({success:true, userData})
 
-        console.log("userData",userId)
+        // console.log("userData",userId)
 
     } catch (error) {
             console.log(error)
@@ -115,8 +115,8 @@ const updateProfile=async(req,res)=>{
     try {
 
 
-        console.log("Raw Request Body:", req.body);
-        console.log("Raw user Id",req.user)
+        // console.log("Raw Request Body:", req.body);
+        // console.log("Raw user Id",req.user)
     
 
         const { name, phone, address, dob, gender}= req.body;
@@ -124,9 +124,9 @@ const updateProfile=async(req,res)=>{
 
         const userId = req.user?.id;
 
-        console.log(userId)
+        // console.log(userId)
 
-        // console.log({userId, name, phone,address,dob, gender })
+        console.log({userId, name, phone,address,dob, gender })
 
 
 
@@ -149,7 +149,7 @@ const updateProfile=async(req,res)=>{
             await userModel.findByIdAndUpdate(userId,{image:imageURL})
         }
 
-        res.json({success:true, message:"Profile updated ",userID:req.body})
+        res.json({success:true, message:"Profile updated "})
 
 
     } catch (error) {

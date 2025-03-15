@@ -16,6 +16,11 @@ const AppContextProvider = ({ children }) => {
     localStorage.getItem("token") ? localStorage.getItem("token") : ""
   );
 
+  const [userData,setUserData]=useState(null);
+
+
+
+
   const getDoctorData = async () => {
     try {
       // const doctor_data= await axios.get(backendUrl + '/api/doctor/list')
@@ -34,17 +39,57 @@ const AppContextProvider = ({ children }) => {
     }
   };
 
+
+  //  get user profile data 
+
+  const loadUserProfileData=async()=>{
+      try {
+        const {data}= await axios.get(backendUrl +'/api/user/get-profile',{headers:{token}})
+
+        // console.log(data.success);
+        // setUserData(data?.userData)
+        // console.log(userData)
+
+        if(data.success)
+        {
+          setUserData(data.userData)
+          // console.log(data);
+        }
+        else{
+          toast.error(data.message)
+        }
+
+
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+  }
+
   const value = {
     doctors,
     currencySymbol,
     token,
     setToken,
     backendUrl,
+    userData,
+    setUserData,
+    loadUserProfileData,
   };
 
   useEffect(() => {
     getDoctorData();
   }, []);
+
+  useEffect(()=>{
+    if(token)
+    {
+      loadUserProfileData()
+      // console.log(userData)
+    }else{
+      setUserData(false)
+    }
+  },[token])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
