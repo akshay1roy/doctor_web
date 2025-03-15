@@ -92,13 +92,15 @@ const loginUser= async(req,res)=>{
 
 const getProfile=async(req,res)=>{
     try {
-        const {userId}= req.body;
+        const userId= req.user?.id;
+
+        console.log(req.user)
 
         const userData= await userModel.findById(userId).select('-password')
 
         res.json({success:true, userData})
 
-        console.log("userData",userData)
+        console.log("userData",userId)
 
     } catch (error) {
             console.log(error)
@@ -111,27 +113,43 @@ const getProfile=async(req,res)=>{
 
 const updateProfile=async(req,res)=>{
     try {
-        const {userId, name, phone, address, dob, gender}= req.body;
+
+
+        console.log("Raw Request Body:", req.body);
+        console.log("Raw user Id",req.user)
+    
+
+        const { name, phone, address, dob, gender}= req.body;
+        // const {userId}= req.body
+
+        const userId = req.user?.id;
+
+        console.log(userId)
+
+        // console.log({userId, name, phone,address,dob, gender })
+
+
 
         const imageFile= req.file
+        
         if( !name || !phone  || !dob || !gender)
         {
             return res.json({success:false, message:"Data Missing "})
         }
 
-        await userModel.findByIdAndUpdate(userId, {name, phone, address: JSON.parse(address),dob, gender})
+        await userModel.findByIdAndUpdate(userId, {name, phone, address:JSON.parse(address),dob, gender})
 
         if(imageFile)
         {
             // upload images to cloudinary 
 
             const imageUpload= await cloudinary.uploader.upload(imageFile.path,{resource_type:'image'})
-            const imageUrl= imageUpload.secure_url
+            const imageURL= imageUpload.secure_url
 
-            await userModel.findByIdAndUpdate(userId,{image:imageUrl})
+            await userModel.findByIdAndUpdate(userId,{image:imageURL})
         }
 
-        res.json({success:true, message:"Profile updated "})
+        res.json({success:true, message:"Profile updated ",userID:req.body})
 
 
     } catch (error) {

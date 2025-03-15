@@ -15,16 +15,18 @@ const authUser=async(req,res,next)=>{
 
         const token_decode=jwt.verify(token,process.env.JWT_SECRET)
 
-        console.log("token",token_decode)
+        // req.body.userId= token_decode.id
 
-        
-        req.body.userId= token_decode.id
+        if (!token_decode || !token_decode.id) {
+            return res.status(401).json({ success: false, message: "Invalid Token" });
+        }
 
-        
+        // ✅ Attach `userId` to req.user instead of req.body
+        req.user = { id: token_decode.id };
+
+
 
         next();
-
-
 
     } catch (error) {
         console.log(error);
