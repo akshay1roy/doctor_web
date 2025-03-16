@@ -1,16 +1,21 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
 import RelatedDoctors from "../components/RelatedDoctors";
+import { toast } from "react-toastify";
+import axios from "axios";
 // import { assets } from "../assets/assets";
 
 const Appointment = () => {
   const { docId } = useParams();
 
+  const navigate = useNavigate();
+
   // console.log(docId)
 
-  const { doctors, currencySymbol } = useContext(AppContext);
+  const { doctors, currencySymbol, backendUrl, token, getDoctorData } =
+    useContext(AppContext);
 
   const daysofWeek = ["SUN", "MON", "TUE", "WEB", "THU", "FRI", "SAT"];
 
@@ -73,6 +78,53 @@ const Appointment = () => {
       }
 
       setDocSlots((prev) => [...prev, timeSlots]);
+    }
+
+    // docInfo
+  };
+
+  // console.log("docSlots", docSlots);
+  // slotTime
+  // console.log("slotTime", slotTime);
+  // console.log("slotIndex", slotIndex);
+
+  // book appointment
+
+  const bookAppointment = async () => {
+    if (!token) {
+      toast.warn("Login to book Appointment");
+      return navigate("/login");
+    }
+
+    try {
+      const date = docSlots[slotIndex][0].dateTime;
+
+      // console.log("date",date);
+
+      let day= date.getDate()
+      let month=date.getMonth()+1;
+      let year= date.getFullYear()
+
+      const slotDate= day +'_'+month+'_'+year;
+      // console.log(slotDate)
+
+      const {data}= await axios.post(backendUrl +'/api/user/book-appointment',{docId, slotDate,slotTime},{headers:{token}})
+
+      console.log(data);
+
+      if(data.success)
+      {
+          toast.success(data.message);
+          getDoctorData()
+          navigate('/my-appointments')
+      }
+      else{
+        toast.error(data.message)
+      }
+
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
     }
   };
 
@@ -158,8 +210,12 @@ const Appointment = () => {
           {docSlots.length &&
             docSlots[slotIndex].map((item, index) => (
               <p
-              onClick={()=>setSlotTime(item.time)}
-                className={`text-sm font-light flex-shrink-0 px-5 py-2 mt-4 rounded-full cursor-pointer ${item.time===slotTime? 'bg-primary text-white':'text-gray-400 border border-gray-300'  } `}
+                onClick={() => setSlotTime(item.time)}
+                className={`text-sm font-light flex-shrink-0 px-5 py-2 mt-4 rounded-full cursor-pointer ${
+                  item.time === slotTime
+                    ? "bg-primary text-white"
+                    : "text-gray-400 border border-gray-300"
+                } `}
                 key={index}
               >
                 {new Date(item.dateTime).toLocaleTimeString("en-US", {
@@ -171,15 +227,15 @@ const Appointment = () => {
             ))}
         </div>
 
-        <button className="bg-primary text-white text-sm px-14 py-3 rounded-full mt-10">
+        <button
+          onClick={bookAppointment}
+          className="bg-primary text-white text-sm px-14 py-3 rounded-full mt-10"
+        >
           Book an appointment
         </button>
       </div>
 
       <RelatedDoctors docId={docId} speciality={docInfo?.speciality} />
-
-
-
     </div>
   );
 };

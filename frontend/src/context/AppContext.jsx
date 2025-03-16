@@ -75,6 +75,7 @@ const AppContextProvider = ({ children }) => {
     userData,
     setUserData,
     loadUserProfileData,
+    getDoctorData,
   };
 
   useEffect(() => {
